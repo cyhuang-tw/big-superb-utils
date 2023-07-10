@@ -32,7 +32,7 @@ class InstructionGenerator:
             return cls.get_tt_instrs()
 
 
-def main(data_dir: Path, seed: int) -> None:
+def main(data_dir: Path, seed: int, mode: str) -> None:
     random.seed(seed)
     if not (data_dir / "data").exists():
         raise FileNotFoundError
@@ -42,7 +42,10 @@ def main(data_dir: Path, seed: int) -> None:
     fields = ",".join(field_list)
     rows.append(fields)
 
-    for split in (data_dir / "data").iterdir():
+    split_list = ["train", "validation"] if mode == "train" else ["test"]
+    split_list = [data_dir / split for split in split_list]
+
+    for split in split_list:
         for class_dir in split.iterdir():
             for file in tqdm(class_dir.iterdir()):
                 # If you added more atrributes/columns, you should modify the below line.
@@ -69,4 +72,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("data_dir", type=Path)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--mode", type=str, choices=["train", "test"], required=True)
     main(**vars(parser.parse_args()))
