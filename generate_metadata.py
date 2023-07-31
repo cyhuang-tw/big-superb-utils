@@ -7,9 +7,23 @@ from tqdm import tqdm
 
 class InstructionGenerator:
     # Instructions used in train & validation (and probably test).
-    tr_instrs = ["This is train instruction 0.", "This is train instruction 1."]
+    tr_instrs = [
+        "Detect whether the provided audio has been produced using a speech enhancement model. The answer could be yes or no.",
+        "Establish whether the given audio is the result produced by a speech enhancement model. The answer could be yes or no.",
+        "Identify whether the given audio has undergone generation or processing via a speech enhancement model. The answer could be yes or no.",
+        "Determine if the provided audio has been synthetically generated using a speech enhancement model. The answer could be yes or no.",
+        "Find out if the given audio is a product of generation by a speech enhancement model. The answer could be yes or no.",
+        "Establish whether the provided audio is the outcome of artificial generation using a speech enhancement model. The answer could be yes or no.",
+        "Detect if the given audio is created or manipulated by a speech enhancement model. The answer could be yes or no.",
+        "Identify whether the given audio has been artificially produced or processed via a speech enhancement model. The answer could be yes or no.",
+    ]
     # Instructions ONLY used in test.
-    tt_instrs = ["This is test instruction 0.", "This is test instruction 1."]
+    tt_instrs = [
+        "Find out if the given audio is created or modified through a speech enhancement model. The answer could be yes or no.",
+        "Detect if the given audio is artificially generated or manipulated by a speech enhancement model. The answer could be yes or no.",
+        "Find out if the given audio is created synthetically or altered through a speech enhancement model. The answer could be yes or no.",
+        "Detect if the given audio is produced by a speech enhancement model. The answer could be yes or no.",
+    ]
     # The probability to sample an instruction from training instructions.
     # This variable is only used in 'get_instrs'.
     tr_prob = 0.7
@@ -43,7 +57,7 @@ def main(data_dir: Path, seed: int, mode: str) -> None:
     rows.append(fields)
 
     split_list = ["train", "validation"] if mode == "train" else ["test"]
-    split_list = [data_dir / split for split in split_list]
+    split_list = [data_dir / "data" / split for split in split_list]
 
     for split in split_list:
         for class_dir in split.iterdir():
@@ -51,7 +65,7 @@ def main(data_dir: Path, seed: int, mode: str) -> None:
                 # If you added more atrributes/columns, you should modify the below line.
                 # Each element in dpr_list corresponds to the field defined in field_list.
                 # E.g., file_name -> file.relative_to(data_dir), file -> file.name, instruction -> instr, label -> class_dir.name.
-                if split == "train" or split == "validation":
+                if split.name == "train" or split.name == "validation":
                     instr = InstructionGenerator.get_tr_instrs()
                 else:
                     instr = InstructionGenerator.get_instrs()
