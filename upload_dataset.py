@@ -23,6 +23,6 @@ def main(data_dir: Path, remote_path: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_dir", type=Path)
-    parser.add_argument("remote_path", type=str)
+    parser.add_argument("--data_dir", type=Path, required=True)
+    parser.add_argument("--remote_path", type=str, required=True)
     main(**vars(parser.parse_args()))
